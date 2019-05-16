@@ -12,13 +12,14 @@
     "build": "tsc"
   },
   "keywords": [
-    "promise",
+    "stream",
     "functional",
+    "chunk",
+    "filter",
+    "from",
     "map",
     "reduce",
-    "filter",
-    "pipe",
-    "pipeline"
+    "transform"
   ],
   "author": "Tyler Stewart",
   "license": "MIT",

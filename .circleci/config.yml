@@ -1,0 +1,110 @@
+version: 2
+
+jobs:
+  install:
+    docker:
+      - image: &node-image circleci/node:lts
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - &npm-cache-key npm-cache-{{ checksum "package-lock.json" }}
+          - npm-cache-
+      - run:
+          name: Install Dependencies
+          command: npm ci
+      - run:
+          name: Transpile Packages
+          command: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - dist
+      - save_cache:
+          key: *npm-cache-key
+          paths:
+            - ~/.npm/_cacache
+
+  audit:
+    docker:
+      - image: *node-image
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: NPM Audit
+          command: |
+            npm -v
+            npm audit
+
+  test:
+    docker:
+      - image: *node-image
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Test Packages
+          command: npm run test:once -- --ci
+
+  dry_publish:
+    docker:
+      - image: *node-image
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Publish
+          when: on_success
+          command: npx semantic-release --dry-run
+
+  publish:
+    docker:
+      - image: *node-image
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - deploy:
+          name: Publish
+          when: on_success
+          command: npx semantic-release
+
+workflows:
+  version: 2
+
+  test:
+    jobs:
+      - install:
+          context: org-global
+
+      - audit:
+          requires:
+            - install
+
+      - test:
+          requires:
+            - install
+
+      - dry_publish:
+          context: org-global
+          requires:
+            - test
+            - audit
+          filters:
+            branches:
+              only: master
+
+      - hold_publish:
+          type: approval
+          requires:
+            - dry_publish
+
+      - publish:
+          context: org-global
+          requires:
+            - hold_publish
