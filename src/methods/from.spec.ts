@@ -95,4 +95,16 @@ describe('from', () => {
     stream.write(3);
     stream.end();
   });
+
+  it('any', (done) => {
+    const check = jest.fn();
+
+    from(1)
+    .on('data', check)
+    .once('end', () => {
+      expect(check.mock.calls[0][0]).toEqual(1);
+      done();
+    })
+    .once('error', done);
+  })
 });

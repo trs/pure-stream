@@ -1,6 +1,11 @@
 import { PassThrough, Writable, Readable } from 'stream';
 import { isIterable, isPromise, isStream } from '../meta';
 
+export function from<T>(value: Iterable<T>): PassThrough
+export function from<T>(value: AsyncIterable<T>): PassThrough
+export function from<T>(value: T): PassThrough
+export function from(value: Readable): PassThrough
+export function from(value: Promise<any>): PassThrough
 export function from(value: any) {
   if (isIterable(value)) return fromIterable(value);
   else if (isPromise(value)) return fromPromise(value);
@@ -17,8 +22,8 @@ function fromPromise(value: Promise<any>) {
 }
 
 function fromIterable<T>(value: T[]) {
-  return buildStream((stream) => {
-    for (let item of value) {
+  return buildStream(async (stream) => {
+    for await (let item of value) {
       stream.write(item);
     }
     stream.end();
