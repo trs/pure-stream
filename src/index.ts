@@ -1,11 +1,5 @@
-import {map} from './methods/map';
-import {reduce} from './methods/reduce';
-import {filter} from './methods/filter';
-import {from} from './methods/from';
-
-export {
-  map,
-  reduce,
-  filter,
-  from
-}
+export * from './methods/map';
+export * from './methods/reduce';
+export * from './methods/filter';
+export * from './methods/from';
+export * from './methods/to';
