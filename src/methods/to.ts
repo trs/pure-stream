@@ -1,8 +1,8 @@
-import { Readable } from "stream";
+import { ReadableTyped } from "../types";
 import { reduce } from "./reduce";
 
-export function toPromise<T>(stream: Readable) {
-  return new Promise((resolve, reject) => {
+export function toPromise<T>(stream: ReadableTyped<T>) {
+  return new Promise<T[]>((resolve, reject) => {
     stream.pipe(reduce<T, T[]>(async (prev, next) => {
       prev.push(next);
       return prev;

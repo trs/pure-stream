@@ -1,11 +1,12 @@
-import { Transform, TransformOptions } from 'stream';
-import { OrPromiseLike, ObjectStream } from '../meta';
+import { OrPromiseLike } from '../meta';
+import { TransformTyped, TransformTypedOptions } from '../types';
+import { Transform } from 'stream';
 
 export function reduce<T, R>(
   method: (previousValue: R, nextValue: T, encoding?: string) => OrPromiseLike<R>,
   initialValue: R,
-  options: TransformOptions = {}
-): ObjectStream<R> {
+  options: TransformTypedOptions<T, R> = {}
+): TransformTyped<T, R> {
   return new Transform({
     objectMode: true,
     ...options,
@@ -20,5 +21,5 @@ export function reduce<T, R>(
     flush(callback) {
       callback(null, initialValue);
     }
-  })
+  });
 }

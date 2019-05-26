@@ -1,10 +1,11 @@
-import { Transform, TransformOptions } from 'stream';
-import { OrPromiseLike, ObjectStream } from '../meta';
+import { Transform } from 'stream';
+import { OrPromiseLike } from '../meta';
+import { TransformTyped, TransformTypedOptions } from "../types";
 
-export function transform<T, R>(
-  method: (chunk: T, encoding: string, push: (chunk: T, encoding?: string) => boolean) => OrPromiseLike<void>,
-  options: TransformOptions = {}
-): ObjectStream<R> {
+export function transform<In, Out>(
+  method: (chunk: In, encoding: string, push: (chunk: In, encoding?: string) => boolean) => OrPromiseLike<void>,
+  options: TransformTypedOptions<In, Out> = {}
+): TransformTyped<In, Out> {
   return new Transform({
     objectMode: true,
     ...options,
