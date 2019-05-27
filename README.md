@@ -2,7 +2,7 @@
 
 > Collection of utilities for working with native streams
 
-![npm](https://img.shields.io/npm/v/pure-promise.svg)
+[![npm](https://img.shields.io/npm/v/pure-stream.svg)](https://www.npmjs.com/package/pure-stream)
 
 ## Install
 
