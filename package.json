@@ -1,6 +1,6 @@
 {
   "name": "pure-stream",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Collection of functional utilities for working with streams",
   "main": "dist/index",
   "files": [
