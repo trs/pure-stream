@@ -112,3 +112,24 @@ from([1, 2, 3])
 // [1, 2]
 // [3]
 ```
+
+### `transform`
+> Perform a transformation on the given stream.  
+> Can return a transformed result or call `push` to add to the stream
+
+```js
+import {from, transform} from 'pure-stream';
+
+from([[1, 2], [3, 4]])
+.pipe(transform((numbers, encoding, push) => {
+  push(numbers[0]);
+  push(numbers[1]);
+}))
+.on('data', console.log);
+
+// Output:
+// 1
+// 2
+// 3
+// 4
+```

@@ -3,7 +3,7 @@ import { OrPromiseLike } from '../meta';
 import { TransformTyped, TransformTypedOptions } from "../types";
 
 export function transform<In, Out>(
-  method: (chunk: In, encoding: string, push: (chunk: In, encoding?: string) => boolean) => OrPromiseLike<void>,
+  method: (chunk: In, encoding: string, push: (chunk: Out, encoding?: string) => boolean) => OrPromiseLike<void | undefined | Out>,
   options: TransformTypedOptions<In, Out> = {}
 ): TransformTyped<In, Out> {
   return new Transform({
@@ -12,7 +12,8 @@ export function transform<In, Out>(
     async transform(chunk, encoding, callback) {
       try {
         const push = this.push.bind(this);
-        method(chunk, encoding, push);
+        const result = await method(chunk, encoding, push);
+        callback(undefined, result);
       } catch (err) {
         callback(err);
       }
