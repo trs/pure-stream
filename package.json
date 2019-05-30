@@ -1,6 +1,6 @@
 {
   "name": "pure-stream",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Collection of functional utilities for working with streams",
   "main": "dist/index",
   "files": [
@@ -21,6 +21,10 @@
     "reduce",
     "transform"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trs/pure-stream.git"
+  },
   "author": "Tyler Stewart",
   "license": "MIT",
   "jest": {
