@@ -16,7 +16,7 @@ $ yarn add pure-stream
 
 These methods can be combined and piped to manipulate data streams.
 
-`pure-stream` utilizes typed interfaces that extend the native promises. This enables streams to be typed while developed, but retain all the native functionality and API.
+`pure-stream` utilizes [typed interfaces](src/types/index.ts) that extend the native streams. This enables streams to be typed while developed, but retain all the native functionality and API.
 
 ## API
 
@@ -83,7 +83,7 @@ from([1, 2, 3])
 // 6
 ```
 
-### 'filter`
+### `filter`
 > Filter out items in a stream using the given function
 
 ```js
@@ -111,6 +111,21 @@ from([1, 2, 3])
 // Output:
 // [1, 2]
 // [3]
+```
+
+### `chunkMap`
+> Combine the items in a stream into chunks of the given size and apply a function to each chunk
+
+```js
+import {from, chunkMap} from 'pure-stream';
+
+from([1, 2, 3])
+.pipe(chunkMap(2, (chunk) => chunk.length))
+.on('data', console.log);
+
+// Output:
+// 2
+// 1
 ```
 
 ### `transform`

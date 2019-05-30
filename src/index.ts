@@ -1,4 +1,5 @@
 export * from './methods/chunk';
+export * from './methods/chunkMap';
 export * from './methods/filter';
 export * from './methods/from';
 export * from './methods/map';
