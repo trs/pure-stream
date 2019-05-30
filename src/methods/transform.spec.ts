@@ -37,4 +37,34 @@ describe('transform', () => {
       done();
     });
   });
+
+  it('allows passing a flush method', (done) => {
+    const check = jest.fn();
+
+    let chunk: number[] = [];
+    from([1, 2, 3])
+    .pipe(transform<number, number[]>(
+      (item, _encoding, push) => {
+        chunk.push(item);
+        if (chunk.length === 2) {
+          push(chunk);
+          chunk = [];
+        }
+      },
+      (push) => {
+        if (chunk.length > 0) {
+          push(chunk);
+          chunk = [];
+        }
+      }
+    ))
+    .on('error', done)
+    .on('data', check)
+    .on('end', () => {
+      expect(check.mock.calls.length).toEqual(2);
+      expect(check.mock.calls[0][0]).toEqual([1, 2]);
+      expect(check.mock.calls[1][0]).toEqual([3]);
+      done();
+    });
+  });
 });
