@@ -3,7 +3,7 @@ import { Transform } from 'stream';
 import { TransformTyped, TransformTypedOptions } from '../types';
 
 export function filter<T>(
-  method: (chunk: T, encoding?: string) => OrPromiseLike<boolean>,
+  method: (chunk: T, encoding: string) => OrPromiseLike<boolean>,
   options: TransformTypedOptions<T, T> = {}
 ): TransformTyped<T, T> {
   return new Transform({
