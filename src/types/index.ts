@@ -157,8 +157,6 @@ export interface DuplexTyped<In, Out> extends Duplex, WritableTyped<In>, Readabl
 }
 
 export interface TransformTyped<In, Out> extends Transform, DuplexTyped<In, Out> {
-  constructor(opts?: TransformTypedOptions<In, Out>): this;
-
   _flush(callback?: CallbackError, data?: Out): void;
 
   _transform(chunk: In | null, encoding: string, callback: TransformCallback<Out>): void;
@@ -248,8 +246,6 @@ export interface TransformTypedOptions<In, Out> extends TransformOptions {
 export interface PassThroughTypedOptions<In> extends TransformTypedOptions<In, In> {}
 
 export interface PassThroughTyped<In> extends PassThrough, TransformTyped<In, In> {
-  constructor(opts?: PassThroughTypedOptions<In>): this;
-
   _flush(callback?: CallbackError, data?: In): void;
 
   _transform(chunk: In | null, encoding: string, callback: TransformCallback<In>): void;

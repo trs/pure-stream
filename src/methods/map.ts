@@ -13,7 +13,8 @@ export function map<T, R>(
     async transform(chunk, encoding, callback) {
       try {
         const result = await method(chunk, encoding, index++);
-        callback(undefined, result);
+        this.push(result);
+        callback();
       } catch (err) {
         callback(err);
       }
