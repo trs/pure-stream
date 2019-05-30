@@ -91,12 +91,12 @@ export interface DuplexTyped<In, Out> extends Duplex, WritableTyped<In>, Readabl
 
   _read(size: number): void;
 
-  write(chunk: In | Buffer | Uint8Array | string | null, callback?: CallbackErrorOptional): boolean;
-  write(chunk: In | Buffer | Uint8Array | string | null, encoding?: string, callback?: CallbackErrorOptional): boolean;
+  write(chunk: In, callback?: CallbackErrorOptional): boolean;
+  write(chunk: In, encoding?: string, callback?: CallbackErrorOptional): boolean;
 
   end(callback?: () => void): void;
-  end(chunk: In | string | Uint8Array | Buffer |  null, callback?: () => void): void;
-  end(chunk: In | string | Uint8Array | Buffer |  null, encoding?: string, callback?: () => void): void;
+  end(chunk: In | null, callback?: () => void): void;
+  end(chunk: In | null, encoding?: string, callback?: () => void): void;
 
   push(chunk: Out | null, encoding?: string): boolean;
 
@@ -157,6 +157,8 @@ export interface DuplexTyped<In, Out> extends Duplex, WritableTyped<In>, Readabl
 }
 
 export interface TransformTyped<In, Out> extends Transform, DuplexTyped<In, Out> {
+  constructor(opts?: TransformTypedOptions<In, Out>): this;
+
   _flush(callback?: CallbackError, data?: Out): void;
 
   _transform(chunk: In | null, encoding: string, callback: TransformCallback<Out>): void;
@@ -167,12 +169,12 @@ export interface TransformTyped<In, Out> extends Transform, DuplexTyped<In, Out>
 
   _read(size: number): void;
 
-  write(chunk: In | Buffer | Uint8Array | string | null, callback?: CallbackErrorOptional): boolean;
-  write(chunk: In | Buffer | Uint8Array | string | null, encoding?: string, callback?: CallbackErrorOptional): boolean;
+  write(chunk: In, callback?: CallbackErrorOptional): boolean;
+  write(chunk: In, encoding?: string, callback?: CallbackErrorOptional): boolean;
 
   end(callback?: () => void): void;
-  end(chunk: In | string | Uint8Array | Buffer | null, callback?: () => void): void;
-  end(chunk: In | string | Uint8Array | Buffer |  null, encoding?: string, callback?: () => void): void;
+  end(chunk: In | null, callback?: () => void): void;
+  end(chunk: In | null, encoding?: string, callback?: () => void): void;
 
   push(chunk: Out | null): boolean;
   push(chunk: Out | null, encoding?: string): boolean;
@@ -243,7 +245,11 @@ export interface TransformTypedOptions<In, Out> extends TransformOptions {
   flush?(this: TransformTyped<In, Out>, callback: TransformCallback<Out>): void;
 }
 
+export interface PassThroughTypedOptions<In> extends TransformTypedOptions<In, In> {}
+
 export interface PassThroughTyped<In> extends PassThrough, TransformTyped<In, In> {
+  constructor(opts?: PassThroughTypedOptions<In>): this;
+
   _flush(callback?: CallbackError, data?: In): void;
 
   _transform(chunk: In | null, encoding: string, callback: TransformCallback<In>): void;
@@ -254,12 +260,12 @@ export interface PassThroughTyped<In> extends PassThrough, TransformTyped<In, In
 
   _read(size: number): void;
 
-  write(chunk: In | Buffer | Uint8Array | string | null, callback?: CallbackErrorOptional): boolean;
-  write(chunk: In | Buffer | Uint8Array | string | null, encoding?: string, callback?: CallbackErrorOptional): boolean;
+  write(chunk: In, callback?: CallbackErrorOptional): boolean;
+  write(chunk: In, encoding?: string, callback?: CallbackErrorOptional): boolean;
 
   end(callback?: () => void): void;
-  end(chunk: In | string | Uint8Array | Buffer |  null, callback?: () => void): void;
-  end(chunk: In | string | Uint8Array | Buffer |  null, encoding?: string, callback?: () => void): void;
+  end(chunk: In | null, callback?: () => void): void;
+  end(chunk: In | null, encoding?: string, callback?: () => void): void;
 
   push(chunk: In | null): boolean;
   push(chunk: In | null, encoding?: string): boolean;
