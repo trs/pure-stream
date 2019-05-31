@@ -5,13 +5,13 @@ interface PipeOptions {
 }
 
 type CallbackError = (error: Error | null) => void;
-type CallbackErrorOptional = (error?: Error | null) => void;
-type TransformCallback<T> = (error?: Error | null, data?: T) => void;
+type CallbackErrorOptional = (error: Error | null | undefined) => void;
+type TransformCallback<T> = (error: Error | null | undefined, data?: T) => void;
 
 export interface ReadableTyped<Out> extends Readable {
   _read(size: number): void;
 
-  _destroy(error: Error | null, callback: CallbackErrorOptional): void;
+  _destroy(error: Error | null, callback: CallbackError): void;
 
   push(chunk: Out | null, encoding?: string): boolean;
 
@@ -74,7 +74,7 @@ export interface ReadableTyped<Out> extends Readable {
 export interface WritableTyped<In> extends Writable {
   _write(chunk: In | null, encoding: string, callback: CallbackErrorOptional): void;
 
-  _destroy(error: Error | null, callback: CallbackErrorOptional): void;
+  _destroy(error: Error | null, callback: CallbackError): void;
 
   write(chunk: In | null, callback?: CallbackErrorOptional): boolean;
   write(chunk: In | null, encoding?: string, callback?: CallbackErrorOptional): boolean;
@@ -157,9 +157,9 @@ export interface DuplexTyped<In, Out> extends Duplex, WritableTyped<In>, Readabl
 }
 
 export interface TransformTyped<In, Out> extends Transform, DuplexTyped<In, Out> {
-  _flush(callback?: CallbackError, data?: Out): void;
+  _flush(callback: TransformCallback<In>): void;
 
-  _transform(chunk: In | null, encoding: string, callback: TransformCallback<Out>): void;
+  _transform(chunk: In | null, encoding: string, callback: TransformCallback<In>): void;
 
   _write(chunk: In | null, encoding: string, callback: CallbackErrorOptional): void;
 
@@ -246,7 +246,7 @@ export interface TransformTypedOptions<In, Out> extends TransformOptions {
 export interface PassThroughTypedOptions<In> extends TransformTypedOptions<In, In> {}
 
 export interface PassThroughTyped<In> extends PassThrough, TransformTyped<In, In> {
-  _flush(callback?: CallbackError, data?: In): void;
+  _flush(callback: TransformCallback<In>): void;
 
   _transform(chunk: In | null, encoding: string, callback: TransformCallback<In>): void;
 

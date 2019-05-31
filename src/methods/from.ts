@@ -1,4 +1,4 @@
-import { PassThrough, Writable } from 'stream';
+import { PassThrough } from 'stream';
 import { isIterable, isPromise, isStream } from '../meta';
 import { PassThroughTyped, ReadableTyped } from '../types';
 
