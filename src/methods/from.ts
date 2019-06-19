@@ -4,9 +4,9 @@ import { PassThroughTyped, ReadableTyped } from '../types';
 
 export function from<T>(value: Iterable<T>): PassThroughTyped<T>
 export function from<T>(value: AsyncIterable<T>): PassThroughTyped<T>
-export function from<T>(value: T): PassThroughTyped<T>
 export function from<T>(value: ReadableTyped<T>): PassThroughTyped<T>
 export function from<T>(value: Promise<T>): PassThroughTyped<T>
+export function from<T>(value: T): PassThroughTyped<T>
 export function from<T>(value: any) {
   if (isIterable(value)) return fromIterable<T>(value);
   else if (isPromise(value)) return fromPromise<T>(value);

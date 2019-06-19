@@ -67,4 +67,32 @@ describe('transform', () => {
       done();
     });
   });
+
+  it('handles errors by closing stream', (done) => {
+    const check = jest.fn();
+
+    from([1, 2, 3])
+    .pipe(transform(() => {
+      throw new Error('test')
+    }))
+    .on('error', check)
+    .on('close', () => {
+      expect(check.mock.calls.length).toEqual(1);
+      done();
+    });
+  });
+
+  it('handles errors by closing stream', (done) => {
+    const check = jest.fn();
+
+    from([1, 2, 3])
+    .pipe(transform(async () => {
+      throw new Error('test')
+    }))
+    .on('error', check)
+    .on('close', () => {
+      expect(check.mock.calls.length).toEqual(1);
+      done();
+    });
+  });
 });

@@ -7,3 +7,4 @@ export * from './methods/passthrough';
 export * from './methods/reduce';
 export * from './methods/to';
 export * from './methods/transform';
+export * from './types';
