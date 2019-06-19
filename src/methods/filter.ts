@@ -15,6 +15,7 @@ export function filter<T>(
         callback(undefined, take ? chunk : undefined);
       } catch (err) {
         callback(err);
+        this.destroy();
       }
     }
   });

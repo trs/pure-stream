@@ -13,21 +13,31 @@ export function chunkMap<T, R>(
     objectMode: true,
     ...options,
     async transform(item, _encoding, callback) {
-      chunk.push(item);
-      if (chunk.length >= size) {
-        const result = await method(chunk, index++);
-        this.push(result);
-        chunk = [];
+      try {
+        chunk.push(item);
+        if (chunk.length >= size) {
+          const result = await method(chunk, index++);
+          this.push(result);
+          chunk = [];
+        }
+        callback();
+      } catch (err) {
+        callback(err);
+        this.destroy();
       }
-      callback();
     },
     async flush(callback) {
-      if (chunk.length > 0) {
-        const result = await method(chunk, index++);
-        this.push(result);
-        chunk = [];
+      try {
+        if (chunk.length > 0) {
+          const result = await method(chunk, index++);
+          this.push(result);
+          chunk = [];
+        }
+        callback();
+      } catch (err) {
+        callback(err);
+        this.destroy();
       }
-      callback();
     }
   });
 }

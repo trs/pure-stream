@@ -17,6 +17,7 @@ export function map<T, R>(
         callback();
       } catch (err) {
         callback(err);
+        this.destroy();
       }
     }
   });

@@ -17,6 +17,7 @@ export function reduce<T, R>(
         callback();
       } catch (err) {
         callback(err);
+        this.destroy();
       }
     },
     flush(callback) {

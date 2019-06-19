@@ -37,6 +37,7 @@ export function transform<In, Out>(
         callback();
       } catch (err) {
         callback(err);
+        this.destroy();
       }
     },
     async flush(callback) {
@@ -50,6 +51,7 @@ export function transform<In, Out>(
         callback();
       } catch (err) {
         callback(err);
+        this.destroy();
       }
     }
   });
