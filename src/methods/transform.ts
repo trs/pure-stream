@@ -27,17 +27,20 @@ export function transform<In, Out>(
 
   return new Transform({
     objectMode: true,
+    emitClose: true,
+    autoDestroy: true,
+    allowHalfOpen: false,
     ...options,
     async transform(chunk, encoding, callback) {
       try {
         const push = this.push.bind(this);
         const result = await transform(chunk, encoding, push);
         if (result !== undefined)
-            this.push(result);
-        callback();
+          this.push(result);
       } catch (err) {
-        callback(err);
-        this.destroy();
+        this.destroy(err);
+      } finally {
+        callback();
       }
     },
     async flush(callback) {
@@ -48,10 +51,10 @@ export function transform<In, Out>(
           if (result !== undefined)
             this.push(result);
         }
-        callback();
       } catch (err) {
-        callback(err);
-        this.destroy();
+        this.destroy(err);
+      } finally {
+        callback();
       }
     }
   });

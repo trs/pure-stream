@@ -1,11 +1,10 @@
-import { PassThrough } from 'stream';
-import { PassThroughTyped, TransformTypedOptions } from "../types";
+import { PassThroughTyped, TransformTypedOptions } from '../types';
+import { transform } from '..';
 
 export function passthrough<In>(
   options: TransformTypedOptions<In, In> = {}
 ): PassThroughTyped<In> {
-  return new PassThrough({
-    objectMode: true,
-    ...options
-  });
+  return transform((chunk, encoding, push) => {
+    push(chunk, encoding);
+  }, options);
 }
