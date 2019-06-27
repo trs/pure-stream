@@ -236,14 +236,14 @@ export interface TransformTyped<In, Out> extends Transform, DuplexTyped<In, Out>
 export interface TransformTypedOptions<In, Out> extends TransformOptions {
   read?(this: TransformTyped<In, Out>, size: number): void;
   write?(this: TransformTyped<In, Out>, chunk: In, encoding: string, callback: (error?: Error | null) => void): void;
-  writev?(this: TransformTyped<In, Out>, chunks: Array<{ chunk: In, encoding: string }>, callback: (error?: Error | null) => void): void;
+  writev?(this: TransformTyped<In, Out>, chunks: { chunk: In; encoding: string }[], callback: (error?: Error | null) => void): void;
   final?(this: TransformTyped<In, Out>, callback: (error?: Error | null) => void): void;
   destroy?(this: TransformTyped<In, Out>, error: Error | null, callback: (error: Error | null) => void): void;
   transform?(this: TransformTyped<In, Out>, chunk: In, encoding: string, callback: TransformCallback<Out>): void;
   flush?(this: TransformTyped<In, Out>, callback: TransformCallback<Out>): void;
 }
 
-export interface PassThroughTypedOptions<In> extends TransformTypedOptions<In, In> {}
+export type PassThroughTypedOptions<In> = TransformTypedOptions<In, In>;
 
 export interface PassThroughTyped<In> extends PassThrough, TransformTyped<In, In> {
   _flush(callback: TransformCallback<In>): void;
