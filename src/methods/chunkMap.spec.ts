@@ -4,7 +4,7 @@ describe('chunkMap', () => {
   it('applies function of chunk of stream', (done) => {
     const check = jest.fn();
     from([1, 2, 3])
-      .pipe(chunkMap(2, (chunk) => [chunk.length, chunk]))
+      .pipe(chunkMap<number, [number, number[]]>(2, (chunk) => [chunk.length, chunk]))
       .on('error', done)
       .on('data', check)
       .on('end', () => {

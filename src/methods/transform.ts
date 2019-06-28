@@ -5,14 +5,25 @@ import { TransformTyped, TransformTypedOptions } from "../types";
 type Push<T> = (chunk: T, encoding?: string) => boolean;
 
 export function transform<In, Out>(
-  transform: (this: TransformTyped<In, Out>, chunk: In, encoding: string, push: Push<Out>) => OrPromiseLike<void | undefined | Out>,
+  transform: (this: TransformTyped<In, Out>, chunk: In, encoding: string, push: Push<Out>) => OrPromiseLike<Out>,
   flush: (this: TransformTyped<In, Out>, push: Push<Out>) => OrPromiseLike<void>,
   options?: TransformTypedOptions<In, Out>
 ): TransformTyped<In, Out>
 export function transform<In, Out>(
-  transform: (this: TransformTyped<In, Out>, chunk: In, encoding: string, push: Push<Out>) => OrPromiseLike<void | undefined | Out>,
+  transform: (this: TransformTyped<In, Out>, chunk: In, encoding: string, push: Push<Out>) => OrPromiseLike<void | undefined>,
+  flush: (this: TransformTyped<In, Out>, push: Push<Out>) => OrPromiseLike<void>,
   options?: TransformTypedOptions<In, Out>
 ): TransformTyped<In, Out>
+
+export function transform<In, Out>(
+  transform: (this: TransformTyped<In, Out>, chunk: In, encoding: string, push: Push<Out>) => OrPromiseLike<Out>,
+  options?: TransformTypedOptions<In, Out>
+): TransformTyped<In, Out>
+export function transform<In, Out>(
+  transform: (this: TransformTyped<In, Out>, chunk: In, encoding: string, push: Push<Out>) => OrPromiseLike<void | undefined>,
+  options?: TransformTypedOptions<In, Out>
+): TransformTyped<In, Out>
+
 export function transform<In, Out>(
   transform: (this: TransformTyped<In, Out>, chunk: In, encoding: string, push: Push<Out>) => OrPromiseLike<void | undefined | Out>,
   flush?: ((this: TransformTyped<In, Out>, push: Push<Out>) => OrPromiseLike<void>) | TransformTypedOptions<In, Out>,
@@ -31,25 +42,25 @@ export function transform<In, Out>(
     autoDestroy: true,
     allowHalfOpen: false,
     ...options,
-    async transform(chunk, encoding, callback) {
+    async transform(this: Transform, chunk, encoding, callback) {
       try {
         const push = this.push.bind(this);
         const result = await transform.call(this, chunk, encoding, push);
         if (result !== undefined)
-          this.push(result);
+          push(result);
       } catch (err) {
         this.destroy(err);
       } finally {
         callback();
       }
     },
-    async flush(callback) {
+    async flush(this: Transform, callback) {
       try {
         if (typeof flush === 'function') {
           const push = this.push.bind(this);
           const result = await flush.call(this, push);
           if (result !== undefined)
-            this.push(result);
+            push(result);
         }
       } catch (err) {
         this.destroy(err);

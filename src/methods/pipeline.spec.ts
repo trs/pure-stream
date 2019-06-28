@@ -8,8 +8,8 @@ describe('pipeline', () => {
 
     pipeline(
       source,
-      transform((chunk) => chunk * 2),
-      transform((chunk) => chunk.toString())
+      transform<number, number>((chunk) => chunk * 2),
+      transform<number, string>((chunk) => chunk.toString())
     )
       .on('data', check)
       .once('error', done)
@@ -43,7 +43,6 @@ describe('pipeline', () => {
       .on('close', () => {
         expect(check.mock.calls.length).toBe(1);
         expect(check.mock.calls[0][0]).toBe('2');
-        // expect(check.mock.calls[1][0]).toBe('4');
 
         expect(checkErr.mock.calls.length).toBe(1);
         done();

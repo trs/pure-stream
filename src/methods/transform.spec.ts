@@ -6,7 +6,7 @@ describe('transform', () => {
     const check = jest.fn();
 
     from([[1, 2], [3, 4], [5, 6]])
-      .pipe(transform((chunk) => chunk[0] + chunk[1]))
+      .pipe(transform<number[], number>((chunk) => chunk[0] + chunk[1]))
       .on('error', done)
       .on('data', check)
       .on('end', () => {
