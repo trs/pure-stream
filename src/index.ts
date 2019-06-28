@@ -1,6 +1,7 @@
 export * from './methods/chunk';
 export * from './methods/chunkMap';
 export * from './methods/filter';
+export * from './methods/flat';
 export * from './methods/from';
 export * from './methods/map';
 export * from './methods/passthrough';
