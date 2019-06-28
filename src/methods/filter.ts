@@ -3,11 +3,12 @@ import { TransformTyped, TransformTypedOptions } from '../types';
 import { transform } from '..';
 
 export function filter<T>(
-  method: (chunk: T, encoding: string) => OrPromiseLike<boolean>,
+  method: (this: TransformTyped<T, T>, chunk: T, encoding: string, index: number) => OrPromiseLike<boolean>,
   options: TransformTypedOptions<T, T> = {}
 ): TransformTyped<T, T> {
-  return transform(async (chunk, encoding, push) => {
-    const take = await method(chunk, encoding);
+  let index = 0;
+  return transform(async function (chunk, encoding, push) {
+    const take = await method.call(this, chunk, encoding, index++);
     if (take) push(chunk, encoding);
   }, options);
 }
