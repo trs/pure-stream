@@ -1,8 +1,18 @@
 # pure-stream
 
-> Collection of utilities for working with native streams
+> Collection of utilities for working with object streams
 
 [![npm](https://img.shields.io/npm/v/pure-stream.svg)](https://www.npmjs.com/package/pure-stream)
+
+## About
+
+This library uses a new class `PureStream` to implement object streams in an easy and logical way.
+
+- PureStreams are `ended` when an error occurs
+- `pipe`-ing propagates errors from source to destination(s)
+- No events. Data is collected with `each` and ended with `done`
+
+PureStreams are lazy, they won't begin reading data until `.done` is called.
 
 ## Install
 
@@ -12,139 +22,29 @@ $ npm install pure-stream
 $ yarn add pure-stream
 ```
 
-## Usage
-
-These methods can be combined and piped to manipulate data streams.
-
-`pure-stream` utilizes [typed interfaces](src/types/index.ts) that extend the native streams. This enables streams to be typed while developed, but retain all the native functionality and API.
-
-## API
-
-### `from`
-> Create a stream from an iterable, async iterable, stream, any, or a promise for one of the previous.
-
-```js
-import {from} from 'pure-stream';
-
-const getString = () => Promise.resolve('hello');
-
-from(getString())
-.on('data', console.log);
-
-// Output:
-// h
-// e
-// l
-// l
-// o
-```
-
-### `to`
-> Convert a stream into a promise
-
-```js
-import {from, to} from 'pure-stream';
-
-const result = await to(from([1, 2, 3]));
-console.log(result);
-
-// Output:
-// [1, 2, 3]
-```
-
-### `map`
-> Apply a function to each item in a stream
+## Quick-Start
 
 ```js
 import {from, map} from 'pure-stream';
 
 from([1, 2, 3])
 .pipe(map((value) => value * 2))
-.on('data', console.log);
-
-// Output:
-// 2
-// 4
-// 6
-
+.each((value) => {
+  console.log(value);
+  // Output:
+  // 2
+  // 4
+  // 6
+})
+.done((err) => {
+  if (err) console.log('Error:', err);
+  else console.log('Success');
+});
 ```
 
-### `reduce`
-> Reduce the items in a stream using the given function
+## Usage
 
-```js
-import {from, reduce} from 'pure-stream';
-
-from([1, 2, 3])
-.pipe(reduce((prev, next) => prev + next, 0))
-.on('data', console.log);
-
-// Output:
-// 6
-```
-
-### `filter`
-> Filter out items in a stream using the given function
-
-```js
-import {from, reduce} from 'pure-stream';
-
-from([1, 2, 3])
-.pipe(filter((value) => value % 2 === 1))
-.on('data', console.log);
-
-// Output:
-// 1
-// 3
-```
-
-### `chunk`
-> Combine the items in a stream into chunks of the given size
-
-```js
-import {from, chunk} from 'pure-stream';
-
-from([1, 2, 3])
-.pipe(chunk(2))
-.on('data', console.log);
-
-// Output:
-// [1, 2]
-// [3]
-```
-
-### `chunkMap`
-> Combine the items in a stream into chunks of the given size and apply a function to each chunk
-
-```js
-import {from, chunkMap} from 'pure-stream';
-
-from([1, 2, 3])
-.pipe(chunkMap(2, (chunk) => chunk.length))
-.on('data', console.log);
-
-// Output:
-// 2
-// 1
-```
-
-### `transform`
-> Perform a transformation on the given stream.  
-> Can return a transformed result or call `push` to add to the stream
-
-```js
-import {from, transform} from 'pure-stream';
-
-from([[1, 2], [3, 4]])
-.pipe(transform((numbers, encoding, push) => {
-  push(numbers[0]);
-  push(numbers[1]);
-}))
-.on('data', console.log);
-
-// Output:
-// 1
-// 2
-// 3
-// 4
-```
+- [Creators](./docs/Creators.md)
+- [Transformers](./docs/Transformers.md)
+- [Converters](./docs/Converters.md)
+- [PureStream](./docs/PureStream.md)

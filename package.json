@@ -1,7 +1,7 @@
 {
   "name": "pure-stream",
   "version": "1.3.0",
-  "description": "Collection of functional utilities for working with streams",
+  "description": "Collection of functional utilities for working with object streams",
   "main": "dist/index",
   "files": [
     "dist/"
@@ -12,6 +12,9 @@
     "build": "tsc"
   },
   "keywords": [
+    "easy",
+    "simple",
+    "logical",
     "stream",
     "functional",
     "chunk",
@@ -19,7 +22,8 @@
     "from",
     "map",
     "reduce",
-    "transform"
+    "transform",
+    "passthrough"
   ],
   "repository": {
     "type": "git",
