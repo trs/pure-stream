@@ -1,9 +1,9 @@
 import { filter } from '..';
-import { TransformTyped } from '../types';
+import { PureStream } from '../PureStream';
 
-export function take<T>(skip: number, count: number): TransformTyped<T, T>
-export function take<T>(count: number): TransformTyped<T, T>
-export function take<T>(skip: number, count?: number): TransformTyped<T, T> {
+export function take<T>(skip: number, count: number): PureStream<T, T>
+export function take<T>(count: number): PureStream<T, T>
+export function take<T>(skip: number, count?: number): PureStream<T, T> {
   if (count === undefined) {
     count = skip;
     skip = 0;
@@ -12,7 +12,7 @@ export function take<T>(skip: number, count?: number): TransformTyped<T, T> {
   const end = count + skip;
   let ended = false;
 
-  return filter<T>(function (chunk, encoding, index) {
+  return filter<T>(function (chunk, index) {
     const canStart = index > start;
     const canTake = index < end;
 

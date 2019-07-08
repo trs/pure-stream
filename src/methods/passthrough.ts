@@ -1,10 +1,10 @@
-import { PassThroughTyped, TransformTypedOptions } from '../types';
 import { transform } from '..';
+import { PureStream, PureStreamOptions } from '../PureStream';
 
 export function passthrough<In>(
-  options: TransformTypedOptions<In, In> = {}
-): PassThroughTyped<In> {
-  return transform((chunk, encoding, push) => {
-    push(chunk, encoding);
+  options: PureStreamOptions<In, In> = {}
+): PureStream<In, In> {
+  return transform((chunk, push) => {
+    push(chunk);
   }, options);
 }

@@ -6,9 +6,9 @@ describe('filter', () => {
 
     from([1, 2, 3, 4])
       .pipe(filter((chunk) => chunk % 2 == 0))
-      .on('data', check)
-      .on('error', done)
-      .on('end', () => {
+      .each(check)
+      .done((err) => {
+        expect(err).toBe(undefined);
         expect(check.mock.calls.length).toEqual(2);
         expect(check.mock.calls[0][0]).toEqual(2);
         expect(check.mock.calls[1][0]).toEqual(4);

@@ -1,14 +1,14 @@
 import { OrPromiseLike } from '../meta';
-import { TransformTyped, TransformTypedOptions } from '../types';
 import { transform } from '..';
+import { PureStream, PureStreamOptions } from '../PureStream';
 
 export function filter<T>(
-  method: (this: TransformTyped<T, T>, chunk: T, encoding: string, index: number) => OrPromiseLike<boolean>,
-  options: TransformTypedOptions<T, T> = {}
-): TransformTyped<T, T> {
+  method: (this: PureStream<T, T>, value: T, index: number) => OrPromiseLike<boolean>,
+  options: PureStreamOptions<T, T> = {}
+): PureStream<T, T> {
   let index = 0;
-  return transform(async function (chunk, encoding, push) {
-    const take = await method.call(this, chunk, encoding, index++);
-    if (take) push(chunk, encoding);
+  return transform(async function (chunk, push) {
+    const take = await method.call(this, chunk, index++);
+    if (take) push(chunk);
   }, options);
 }
