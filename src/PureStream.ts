@@ -6,9 +6,12 @@ export type PureStreamPush<T> = (value: T) => void;
 export type PureStreamTransform<In, Out> = (this: PureStream<In, Out>, value: In, push: PureStreamPush<Out>) => OrPromiseLike<void | any>;
 export type PureStreamFlush<In, Out> = (this: PureStream<In, Out>, push: PureStreamPush<Out>) => OrPromiseLike<void | any>;
 
-export interface PureStreamOptions<In, Out> {
+export interface PureStreamOptions {
   /** Limit backpressure to this many objects */
   highWaterMark?: number;
+}
+
+export interface PureStreamInternal<In, Out> {
   /**
    * **INTERNAL**
    *
@@ -93,15 +96,18 @@ export class PureStream<In, Out>{
   /** Indicates if the stream has ended */
   public ended = false;
 
-  public constructor(options: PureStreamOptions<In, Out> = {}) {
+  public constructor();
+  public constructor(options: PureStreamOptions);
+  public constructor(options: PureStreamOptions, internal?: PureStreamInternal<In, Out>)
+  public constructor(options: PureStreamOptions = {}, internal: PureStreamInternal<In, Out> = {}) {
     this.instance = new PassThrough({
       objectMode: true,
       allowHalfOpen: false,
       autoDestroy: true,
       emitClose: false,
       highWaterMark: options.highWaterMark,
-      transform: buildTransform(this, options.transform),
-      flush: buildFlush(this, options.flush)
+      transform: buildTransform(this, internal.transform),
+      flush: buildFlush(this, internal.flush)
     });
     this.instance.pause();
 
@@ -147,7 +153,7 @@ export class PureStream<In, Out>{
   }
 
   public each(handler: (value: Out) => OrPromiseLike<void>): PureStream<Out, Out> {
-    return this.pipe(new PureStream({
+    return this.pipe(new PureStream({}, {
       transform: ((value, push) => {
         handler(value);
         push(value);
