@@ -33,6 +33,16 @@ function fromAny<T>(value: T) {
   return buildStream<T>((stream) => stream.end(value));
 }
 
+/**
+ * Convert the given value into a stream.
+ * Can be:
+ * - Native Readable stream
+ * - Native Transform stream
+ * - Iterable
+ * - AsyncIterable
+ * - Promise
+ * - Any
+ */
 export function from<T>(value: OrPromiseLike<Readable>): PureStream<T, T>
 export function from<In, Out>(value: OrPromiseLike<Transform>): PureStream<In, Out>
 export function from<T>(value: OrPromiseLike<Iterable<T>>): PureStream<T, T>

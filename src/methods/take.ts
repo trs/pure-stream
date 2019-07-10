@@ -1,6 +1,9 @@
 import { filter } from '..';
 import { PureStream } from '../PureStream';
 
+/**
+ * Only take a certain number of items from a stream
+ */
 export function take<T>(skip: number, count: number): PureStream<T, T>
 export function take<T>(count: number): PureStream<T, T>
 export function take<T>(skip: number, count?: number): PureStream<T, T> {

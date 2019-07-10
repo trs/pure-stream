@@ -2,9 +2,12 @@ import { OrPromiseLike } from '../meta';
 import { transform } from '..';
 import { PureStream, PureStreamOptions } from '../PureStream';
 
+/**
+ * Remove the `value` from the stream if `method` returns/resolves to true
+ */
 export function filter<T>(
   method: (this: PureStream<T, T>, value: T, index: number) => OrPromiseLike<boolean>,
-  options: PureStreamOptions<T, T> = {}
+  options: PureStreamOptions = {}
 ): PureStream<T, T> {
   let index = 0;
   return transform(async function (chunk, push) {

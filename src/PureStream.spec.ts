@@ -36,6 +36,30 @@ describe('PureStream', () => {
       source.write(1);
       dest.destroy(new Error('test'));
     });
+
+    it('propogates errors to multiple pipes', (done) => {
+      const source = new PureStream();
+      const dest1 = new PureStream();
+      const dest2 = new PureStream();
+      const dest3 = new PureStream();
+
+      source.pipe(dest1).pipe(dest2).done((err) => {
+        expect(err).toEqual(new Error('test'));
+      });
+      source.pipe(dest3).done((err) => {
+        expect(err).toEqual(new Error('test'));
+      });
+
+      source.done((err) => {
+        expect(err).toEqual(new Error('test'));
+        setImmediate(() => {
+          expect.assertions(3);
+          done();
+        });
+      });
+
+      source.destroy(new Error('test'));
+    });
   });
 
   describe('wrap', () => {
