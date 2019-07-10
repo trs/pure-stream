@@ -1,22 +1,14 @@
 import { OrPromiseLike } from '../meta';
-import { Transform } from 'stream';
 import { TransformTyped, TransformTypedOptions } from '../types';
+import { transform } from '..';
 
 export function filter<T>(
-  method: (chunk: T, encoding: string) => OrPromiseLike<boolean>,
+  method: (this: TransformTyped<T, T>, chunk: T, encoding: string, index: number) => OrPromiseLike<boolean>,
   options: TransformTypedOptions<T, T> = {}
 ): TransformTyped<T, T> {
-  return new Transform({
-    objectMode: true,
-    ...options,
-    async transform(chunk, encoding, callback) {
-      try {
-        const take = await method(chunk, encoding);
-        callback(undefined, take ? chunk : undefined);
-      } catch (err) {
-        callback(err);
-        this.destroy();
-      }
-    }
-  });
+  let index = 0;
+  return transform(async function (chunk, encoding, push) {
+    const take = await method.call(this, chunk, encoding, index++);
+    if (take) push(chunk, encoding);
+  }, options);
 }

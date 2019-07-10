@@ -1,5 +1,4 @@
-import {from} from './from';
-import {toPromise} from './to';
+import {from, toPromise} from '..';
 
 describe('toPromise', () => {
   it('resolves stream to promise for an array', async () => {
