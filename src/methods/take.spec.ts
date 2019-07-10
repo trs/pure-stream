@@ -16,19 +16,4 @@ describe('take', () => {
         done();
       });
   });
-
-  it('starts at the given offset', (done) => {
-    const check = jest.fn();
-
-    from([1, 2, 3, 4, 5])
-      .pipe(take(2, 2))
-      .each(check)
-      .done((err) => {
-        expect(err).toBe(undefined);
-        expect(check.mock.calls.length).toBe(2);
-        expect(check.mock.calls[0][0]).toBe(3);
-        expect(check.mock.calls[1][0]).toBe(4);
-        done();
-      });
-  });
 });

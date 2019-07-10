@@ -6,6 +6,7 @@ export * from './methods/from';
 export * from './methods/map';
 export * from './methods/passthrough';
 export * from './methods/reduce';
+export * from './methods/slice';
 export * from './methods/take';
 export * from './methods/to';
 export * from './methods/transform';
