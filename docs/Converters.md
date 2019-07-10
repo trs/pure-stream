@@ -3,7 +3,8 @@
 Converters convert a stream into another type.
 
 ### `toPromise`
-> Convert a stream into a promise
+
+Convert a stream into a promise for an array of values.
 
 ```js
 import {from, toPromise} from 'pure-stream';
@@ -15,5 +16,5 @@ console.log(result);
 // [1, 2, 3]
 ```
 
-- References:
-    - [`from`]('./Creators.md#from)
+> References:  
+> [`from`]('./Creators.md#from)

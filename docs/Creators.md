@@ -3,6 +3,7 @@
 Creators create a new stream.
 
 ### `from`
+
 Create a stream from an iterable, async iterable, stream, any, or a promise for one of the previous.
 
 ```js
@@ -26,7 +27,8 @@ from(getString())
 > [`from`]('./Creators.md#from)
 
 ### `passthrough`
-> Create a simple passthrough stream.
+
+Create a simple passthrough stream.
 
 ```js
 import {passthrough} from 'pure-stream';

@@ -5,8 +5,9 @@ Transformers manipulate data in a stream.
 They are used as an argument to `pipe`.
 
 ### `transform`
-> Perform a transformation on the given stream.  
-> Call `push` to add to the stream
+
+Perform a transformation on the given stream.  
+Call `push` to add an item to the stream.
 
 ```js
 import {from, transform} from 'pure-stream';
@@ -30,7 +31,8 @@ from([[1, 2], [3, 4]])
 > [`from`]('./Creators.md#from)
 
 ### `map`
-> Apply a function to each item in a stream
+
+Apply a function to each item in a stream.
 
 ```js
 import {from, map} from 'pure-stream';
@@ -50,7 +52,8 @@ from([1, 2, 3])
 > [`from`]('./Creators.md#from)
 
 ### `reduce`
-> Reduce the items in a stream using the given function
+
+Reduce the items in a stream using the given function.
 
 ```js
 import {from, reduce} from 'pure-stream';
@@ -68,7 +71,8 @@ from([1, 2, 3])
 > [`from`]('./Creators.md#from)
 
 ### `filter`
-> Filter out items in a stream using the given function
+
+Filter out items in a stream using the given function.
 
 ```js
 import {from, reduce} from 'pure-stream';
@@ -87,7 +91,8 @@ from([1, 2, 3])
 > [`from`]('./Creators.md#from)
 
 ### `chunk`
-> Combine the items in a stream into chunks of the given size
+
+Combine the items in a stream into chunks of the given size.
 
 ```js
 import {from, chunk} from 'pure-stream';
@@ -106,7 +111,8 @@ from([1, 2, 3])
 > [`from`]('./Creators.md#from)
 
 ### `chunkMap`
-> Combine the items in a stream into chunks of the given size and apply a function to each chunk
+
+Combine the items in a stream into chunks of the given size and apply a function to each chunk.
 
 ```js
 import {from, chunkMap} from 'pure-stream';
