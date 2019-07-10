@@ -1,9 +1,12 @@
-import { transform } from '..';
+import { transform, PureStreamOptions } from '..';
 
-export function flat<T>() {
-  return transform<T[], T>(function (chunk, encoding, push) {
+/**
+ * Flatten a stream of array values
+ */
+export function flat<T>(options: PureStreamOptions = {}) {
+  return transform<T[], T>(function (chunk, push) {
     for (const item of chunk) {
       push(item);
     }
-  });
+  }, options);
 }

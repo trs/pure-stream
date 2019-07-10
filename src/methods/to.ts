@@ -1,13 +1,19 @@
-import { ReadableTyped } from "../types";
 import { reduce } from "./reduce";
+import { PureStream } from "../PureStream";
 
-export function toPromise<T>(stream: ReadableTyped<T>) {
-  return new Promise<T[]>((resolve, reject) => {
-    stream.pipe(reduce<T, T[]>(async (prev, next) => {
+/**
+ * Convert a stream into a promise for an array of values.
+ * This consumes the stream.
+ */
+export function toPromise<In, Out = In>(stream: PureStream<In, Out>) {
+  return new Promise<Out[]>((resolve, reject) => {
+    stream.pipe(reduce<Out, Out[]>(async (prev, next) => {
       prev.push(next);
       return prev;
     }, []))
-    .once('error', reject)
-    .once('data', resolve);
+      .each(resolve)
+      .done((err) => {
+        if (err) reject(err);
+      })
   });
 }

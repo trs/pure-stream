@@ -1,17 +1,20 @@
 import { OrPromiseLike } from '../meta';
-import { TransformTyped, TransformTypedOptions } from '../types';
 import { transform } from '..';
+import { PureStream, PureStreamOptions } from '../PureStream';
 
+/**
+ * Create chunks of `size` from streamed data and apply a `method` on those chunks
+ */
 export function chunkMap<T, R>(
   size: number,
-  method: (this: TransformTyped<T, R>, chunk: T[], index: number) => OrPromiseLike<R>,
-  options: TransformTypedOptions<T, R> = {}
-): TransformTyped<T, R> {
+  method: (this: PureStream<T, R>, value: T[], index: number) => OrPromiseLike<R>,
+  options: PureStreamOptions = {}
+): PureStream<T, R> {
   let index = 0;
   let chunk: T[] = [];
 
   return transform(
-    async function (item, encoding, push) {
+    async function (item, push) {
       chunk.push(item);
       if (chunk.length >= size) {
         const result = await method.call(this, chunk, index++);
