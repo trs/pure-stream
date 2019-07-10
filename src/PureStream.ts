@@ -90,7 +90,7 @@ function buildFlush<In, Out>(self: PureStream<In, Out>, method?: PureStreamFlush
  * Simplified stream implementation. Acts as a native PassThrough stream.
  *
  */
-export class PureStream<In, Out>{
+export class PureStream<In, Out = In> {
   private instance: PassThrough;
 
   /** Indicates if the stream has ended */
@@ -98,7 +98,7 @@ export class PureStream<In, Out>{
 
   public constructor();
   public constructor(options: PureStreamOptions);
-  public constructor(options: PureStreamOptions, internal?: PureStreamInternal<In, Out>)
+  public constructor(options: PureStreamOptions, internal?: PureStreamInternal<In, Out>);
   public constructor(options: PureStreamOptions = {}, internal: PureStreamInternal<In, Out> = {}) {
     this.instance = new PassThrough({
       objectMode: true,
@@ -152,32 +152,41 @@ export class PureStream<In, Out>{
     });
   }
 
-  public each(handler: (value: Out) => OrPromiseLike<void>): PureStream<Out, Out> {
-    return this.pipe(new PureStream({}, {
-      transform: ((value, push) => {
-        handler(value);
-        push(value);
-      })
-    }));
+  public each(handler: (value: Out) => OrPromiseLike<void>): PureStream<In, Out>;
+  public each(handler: (value: Out) => OrPromiseLike<any>): PureStream<In, Out>;
+  /** Inspect each element of the stream */
+  public each(handler: (value: Out) => OrPromiseLike<void | any>): PureStream<In, Out> {
+    this.instance.on('data', (value) => handler(value));
+    return this;
   }
 
-  /** Call the handler once the steam has ended. Will have an error if one occured */
-  public done(handler: (error?: Error) => OrPromiseLike<void>) {
+  public done(handler?: (error?: Error) => OrPromiseLike<void>, consume?: boolean): void;
+  public done(handler?: (error?: Error) => OrPromiseLike<any>, consume?: boolean): void;
+  /**
+   * Calls the handler once the stream ends, if provided.
+   * Will begin consuming the stream, unless consume is false.
+   * @param handler First argument is the error
+   * @param consume Indicates if the stream should begin consuming
+   */
+  public done(handler?: (error?: Error) => OrPromiseLike<void | any>, consume = true): void {
     let error: Error | undefined;
 
     const storeError = (err: Error) => error = err;
     this.instance.once('error', storeError);
     this.instance.once('end', () => {
       this.instance.removeListener('error', storeError);
-      handler(error);
+      if (typeof handler === 'function') {
+        handler(error);
+      }
     });
-    this.instance.resume();
+
+    if (consume) this.instance.resume();
   }
 
-  /** Wrap a native stream in a PureStream */
-  public static wrap<T>(source: Readable): PureStream<T, T>;
-  public static wrap<T>(source: PassThrough): PureStream<T, T>;
+  public static wrap<T>(source: Readable): PureStream<T>;
+  public static wrap<T>(source: PassThrough): PureStream<T>;
   public static wrap<In, Out>(source: Transform): PureStream<In, Out>;
+  /** Wrap a native stream in a PureStream */
   public static wrap<In, Out>(source: Readable) {
     const wrapped = new PureStream<In, Out>();
     const stream = pipe(source, wrapped);

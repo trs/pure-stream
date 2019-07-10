@@ -75,5 +75,47 @@ describe('PureStream', () => {
       source.write(1);
       source.destroy(new Error('test'));
     });
-  })
+  });
+
+  describe('done', () => {
+    it('resumes stream', (done) => {
+      expect.assertions(3);
+
+      const check = jest.fn();
+      const stream = new PureStream();
+      stream.each(check);
+      stream.write(1);
+
+      // Handle end, and begin consuming
+      stream.done((err) => expect(err).toBe(undefined));
+
+      // `each` has occured
+      setImmediate(() => expect(check.mock.calls.length).toBe(1));
+      setImmediate(() => stream.done(() => {
+        expect(check.mock.calls.length).toBe(2);
+        done();
+      }));
+      setImmediate(() => stream.end(2));
+    });
+
+    it('does not resume stream', (done) => {
+      expect.assertions(3);
+
+      const check = jest.fn();
+      const stream = new PureStream();
+      stream.each(check);
+      stream.write(1);
+
+      // Handle end, but don't consume
+      stream.done((err) => expect(err).toBe(undefined), false);
+
+      // `each` has not occured yet
+      setImmediate(() => expect(check.mock.calls.length).toBe(0));
+      setImmediate(() => stream.done(() => {
+        expect(check.mock.calls.length).toBe(2);
+        done();
+      }));
+      setImmediate(() => stream.end(2));
+    })
+  });
 });
