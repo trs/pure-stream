@@ -51,30 +51,19 @@
       }
     }
   },
+  "prettier": "@autovance/eslint-config-autovance/prettier",
   "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
-    "plugins": [
-      "@typescript-eslint"
-    ],
     "extends": [
-      "plugin:@typescript-eslint/recommended"
+      "@autovance/eslint-config-autovance"
     ],
+    "plugins": [
+      "jest"
+    ],
+    "env": {
+      "jest": true
+    },
     "rules": {
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/indent": [
-        "error",
-        2
-      ],
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        {
-          "argsIgnorePattern": "_"
-        }
-      ]
+      "jest/no-focused-tests": "error"
     }
   },
   "lint-staged": {
@@ -98,16 +87,19 @@
     "branch": "master"
   },
   "devDependencies": {
+    "@autovance/eslint-config-autovance": "^1.3.0",
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
     "@types/jest": "^24.0.6",
     "@types/node": "^12.0.4",
-    "@typescript-eslint/eslint-plugin": "^1.4.2",
-    "@typescript-eslint/parser": "^1.4.2",
     "eslint": "^5.14.1",
+    "eslint-plugin-jest": "^22.7.2",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
     "husky": "^1.3.1",
     "jest": "^24.1.0",
     "lint-staged": "^8.1.4",
+    "prettier": "^1.18.2",
     "semantic-release": "^15.13.14",
     "ts-jest": "^24.0.0",
     "typescript": "^3.3.3"
