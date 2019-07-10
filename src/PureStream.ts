@@ -127,12 +127,9 @@ export class PureStream<In, Out = In> {
   }
 
   /** Write a value to the stream */
-  public async write(value: In) {
-    return await new Promise((resolve, reject) => {
-      this.instance.write(value, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
+  public write(value: In) {
+    return this.instance.write(value, async (err) => {
+      if (err) await this.destroy(err);
     });
   }
 
