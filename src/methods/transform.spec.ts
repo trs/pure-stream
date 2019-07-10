@@ -65,19 +65,4 @@ describe('transform', () => {
         done();
       });
   });
-
-  it('handles errors by closing stream', (done) => {
-    const check = jest.fn();
-
-    from([1, 2, 3])
-      .pipe(transform(async () => {
-        throw new Error('test')
-      }))
-      .each(check)
-      .done((err) => {
-        expect(err).toEqual(new Error('test'));
-        expect(check.mock.calls.length).toBe(0);
-        done();
-      });
-  });
 });
