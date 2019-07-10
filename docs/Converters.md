@@ -14,3 +14,6 @@ console.log(result);
 // Output:
 // [1, 2, 3]
 ```
+
+- References:
+    - [`from`]('./Creators.md#from)

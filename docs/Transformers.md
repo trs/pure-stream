@@ -26,6 +26,9 @@ from([[1, 2], [3, 4]])
 // 4
 ```
 
+> References:  
+> [`from`]('./Creators.md#from)
+
 ### `map`
 > Apply a function to each item in a stream
 
@@ -41,8 +44,10 @@ from([1, 2, 3])
 // 2
 // 4
 // 6
-
 ```
+
+> References:  
+> [`from`]('./Creators.md#from)
 
 ### `reduce`
 > Reduce the items in a stream using the given function
@@ -58,6 +63,9 @@ from([1, 2, 3])
 // Output:
 // 6
 ```
+
+> References:  
+> [`from`]('./Creators.md#from)
 
 ### `filter`
 > Filter out items in a stream using the given function
@@ -75,6 +83,9 @@ from([1, 2, 3])
 // 3
 ```
 
+> References:  
+> [`from`]('./Creators.md#from)
+
 ### `chunk`
 > Combine the items in a stream into chunks of the given size
 
@@ -91,6 +102,9 @@ from([1, 2, 3])
 // [3]
 ```
 
+> References:  
+> [`from`]('./Creators.md#from)
+
 ### `chunkMap`
 > Combine the items in a stream into chunks of the given size and apply a function to each chunk
 
@@ -106,3 +120,6 @@ from([1, 2, 3])
 // 2
 // 1
 ```
+
+> References:  
+> [`from`]('./Creators.md#from)

@@ -26,12 +26,12 @@ new PureStream().pipe(new PureStream());
 
 ## `write`
 > Write a value to the stream.  
-> Returns a promise when the value is written.
+> Returns `false` if the stream wishes for the calling code to wait for the `'drain'` event to be emitted before continuing to write additional data; otherwise `true`.
 
 ```js
 import {PureStream} from 'pure-stream';
 
-new PureStream().write(1);
+const written = new PureStream().write(1);
 ```
 
 ## `destroy`
@@ -45,7 +45,7 @@ new PureStream().destroy(new Error('Bad));
 
 ## `end`
 > Ends a stream gracefully.  
-> Takes an optional value
+> Takes an optional value that is written to the stream before end.
 
 ```js
 import {PureStream} from 'pure-stream';

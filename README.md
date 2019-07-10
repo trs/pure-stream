@@ -44,7 +44,7 @@ from([1, 2, 3])
 
 ## Usage
 
+- [PureStream](./docs/PureStream.md)
 - [Creators](./docs/Creators.md)
 - [Transformers](./docs/Transformers.md)
 - [Converters](./docs/Converters.md)
-- [PureStream](./docs/PureStream.md)
