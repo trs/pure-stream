@@ -43,7 +43,7 @@ export interface PureStreamInternal<In, Out> {
 }
 
 /**
- * Pipes `source` into `destination`, same as native stream pipe.
+ * Pipes `source` into `destination`, same as a node stream pipe.
  * Propogates errors from `source` to `destination`
  * Destroys stream on error event
  */
@@ -97,8 +97,7 @@ function buildFlush<In, Out>(self: PureStream<In, Out>, method?: PureStreamFlush
 }
 
 /**
- * Simplified stream implementation. Acts as a native PassThrough stream.
- *
+ * Simplified stream implementation.
  */
 export class PureStream<In, Out = In> {
   private instance: PassThrough;
@@ -192,10 +191,24 @@ export class PureStream<In, Out = In> {
     if (consume) this.instance.resume();
   }
 
+  /** Convert this PureStream into a node PassThrough stream */
+  public toNodeStream(): PassThrough {
+    const stream = new PassThrough();
+
+    this.each((value) => stream.write(value)).done((err) => {
+      if (err) {
+        stream.destroy(err);
+      }
+      stream.end();
+    });
+
+    return stream;
+  }
+
   public static wrap<T>(source: Readable): PureStream<T>;
   public static wrap<T>(source: PassThrough): PureStream<T>;
   public static wrap<In, Out>(source: Transform): PureStream<In, Out>;
-  /** Wrap a native stream in a PureStream */
+  /** Wrap a node stream in a PureStream */
   public static wrap<In, Out>(source: Readable) {
     const wrapped = new PureStream<In, Out>();
     const stream = pipe(
