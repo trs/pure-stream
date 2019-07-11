@@ -139,4 +139,57 @@ describe('PureStream', () => {
       setImmediate(() => stream.end(2));
     });
   });
+
+  describe('toNodeStream', () => {
+    it('resolves to node stream successfully', (done) => {
+      const checkData = jest.fn();
+      const checkError = jest.fn();
+
+      const stream = new PureStream<number>();
+      stream
+        .toNodeStream()
+        .on('data', checkData)
+        .on('error', checkError)
+        .once('end', () => {
+          expect(checkData.mock.calls.length).toBe(3);
+          expect(checkError.mock.calls.length).toBe(0);
+          done();
+        });
+
+      stream.write(1);
+      stream.write(2);
+      stream.end(3);
+    });
+
+    it('resolves to node stream with error', (done) => {
+      const checkData = jest.fn();
+      const checkError = jest.fn();
+
+      const stream = new PureStream<number>();
+      stream
+        .toNodeStream()
+        .on('data', checkData)
+        .on('error', checkError)
+        .once('end', () => {
+          expect(checkData.mock.calls.length).toBe(2);
+          expect(checkError.mock.calls.length).toBe(1);
+          done();
+        });
+
+      stream.write(1);
+      stream.write(2);
+      stream.destroy(new Error('test'));
+    });
+  });
+
+  describe('toPromise', () => {
+    it('resolves stream to promise for an array', async () => {
+      const stream = new PureStream();
+      stream.write(1);
+      stream.write(2);
+      stream.end(3);
+      const result = await stream.toPromise();
+      expect(result).toEqual([1, 2, 3]);
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import { PassThrough, Readable, Transform } from 'stream';
+import { PassThrough, Readable, Transform, TransformOptions } from 'stream';
 import { OrPromiseLike } from './meta';
 
 export type PureStreamPush<T> = (value: T) => void;
@@ -191,16 +191,24 @@ export class PureStream<In, Out = In> {
     if (consume) this.instance.resume();
   }
 
+  public toNodeStream(): PassThrough;
+  public toNodeStream(options: TransformOptions): PassThrough;
+  public toNodeStream(consume: boolean, options?: TransformOptions): PassThrough;
   /** Convert this PureStream into a node PassThrough stream */
-  public toNodeStream(): PassThrough {
-    const stream = new PassThrough();
+  public toNodeStream(consume?: boolean | TransformOptions, options: TransformOptions = {}) {
+    if (typeof consume === 'object') {
+      options = consume;
+      consume = true;
+    }
+
+    const stream = new PassThrough({ ...options, objectMode: true });
 
     this.each((value) => stream.write(value)).done((err) => {
       if (err) {
         stream.destroy(err);
       }
       stream.end();
-    });
+    }, consume);
 
     return stream;
   }

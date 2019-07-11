@@ -7,7 +7,7 @@ import { PureStream } from '../PureStream';
  */
 export function toPromise<In, Out = In>(stream: PureStream<In, Out>) {
   // eslint-disable-next-line no-console
-  console.trace(
+  console.warn(
     'Call to deprecated method `toPromise(stream)`; please use `PureStream.prototype.toPromise()`'
   );
 
