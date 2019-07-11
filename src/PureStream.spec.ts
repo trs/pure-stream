@@ -7,14 +7,12 @@ describe('PureStream', () => {
       const source = new PureStream();
       const dest = new PureStream();
 
-      source
-        .pipe(dest)
-        .done((err) => {
-          expect(source.ended).toBe(true);
-          expect(dest.ended).toBe(true);
-          expect(err).toEqual(new Error('test'));
-          done();
-        });
+      source.pipe(dest).done((err) => {
+        expect(source.ended).toBe(true);
+        expect(dest.ended).toBe(true);
+        expect(err).toEqual(new Error('test'));
+        done();
+      });
 
       source.write(1);
       source.destroy(new Error('test'));
@@ -24,14 +22,12 @@ describe('PureStream', () => {
       const source = new PureStream();
       const dest = new PureStream();
 
-      source
-        .pipe(dest)
-        .done((err) => {
-          expect(source.ended).toBe(false);
-          expect(dest.ended).toBe(true);
-          expect(err).toEqual(new Error('test'));
-          done();
-        });
+      source.pipe(dest).done((err) => {
+        expect(source.ended).toBe(false);
+        expect(dest.ended).toBe(true);
+        expect(err).toEqual(new Error('test'));
+        done();
+      });
 
       source.write(1);
       dest.destroy(new Error('test'));
@@ -43,9 +39,12 @@ describe('PureStream', () => {
       const dest2 = new PureStream();
       const dest3 = new PureStream();
 
-      source.pipe(dest1).pipe(dest2).done((err) => {
-        expect(err).toEqual(new Error('test'));
-      });
+      source
+        .pipe(dest1)
+        .pipe(dest2)
+        .done((err) => {
+          expect(err).toEqual(new Error('test'));
+        });
       source.pipe(dest3).done((err) => {
         expect(err).toEqual(new Error('test'));
       });
@@ -64,16 +63,34 @@ describe('PureStream', () => {
 
   describe('wrap', () => {
     it('wraps native stream', (done) => {
-      const source = new PassThrough({objectMode: true});
+      const source = new PassThrough({ objectMode: true });
       const dest = new PureStream();
 
-      PureStream.wrap(source).pipe(dest).done((err) => {
-        expect(err).toEqual(new Error('test'));
-        done();
-      });
+      PureStream.wrap(source)
+        .pipe(dest)
+        .done((err) => {
+          expect(err).toEqual(new Error('test'));
+          done();
+        });
 
       source.write(1);
       source.destroy(new Error('test'));
+    });
+
+    it('wraps native stream with multiple errors', (done) => {
+      const source = new PassThrough({ objectMode: true });
+      const dest = new PureStream();
+
+      PureStream.wrap(source)
+        .pipe(dest)
+        .done((err) => {
+          expect(err).toEqual(new Error('test1'));
+          done();
+        });
+
+      source.write(1);
+      source.emit('error', new Error('test1'));
+      source.destroy(new Error('test2'));
     });
   });
 
@@ -91,10 +108,12 @@ describe('PureStream', () => {
 
       // `each` has occured
       setImmediate(() => expect(check.mock.calls.length).toBe(1));
-      setImmediate(() => stream.done(() => {
-        expect(check.mock.calls.length).toBe(2);
-        done();
-      }));
+      setImmediate(() =>
+        stream.done(() => {
+          expect(check.mock.calls.length).toBe(2);
+          done();
+        })
+      );
       setImmediate(() => stream.end(2));
     });
 
@@ -111,11 +130,13 @@ describe('PureStream', () => {
 
       // `each` has not occured yet
       setImmediate(() => expect(check.mock.calls.length).toBe(0));
-      setImmediate(() => stream.done(() => {
-        expect(check.mock.calls.length).toBe(2);
-        done();
-      }));
+      setImmediate(() =>
+        stream.done(() => {
+          expect(check.mock.calls.length).toBe(2);
+          done();
+        })
+      );
       setImmediate(() => stream.end(2));
-    })
+    });
   });
 });
