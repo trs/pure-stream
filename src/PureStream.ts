@@ -1,10 +1,17 @@
-import { PassThrough, Readable, Transform } from "stream";
-import { OrPromiseLike } from "./meta";
+import { PassThrough, Readable, Transform } from 'stream';
+import { OrPromiseLike } from './meta';
 
 export type PureStreamPush<T> = (value: T) => void;
 
-export type PureStreamTransform<In, Out> = (this: PureStream<In, Out>, value: In, push: PureStreamPush<Out>) => OrPromiseLike<void | any>;
-export type PureStreamFlush<In, Out> = (this: PureStream<In, Out>, push: PureStreamPush<Out>) => OrPromiseLike<void | any>;
+export type PureStreamTransform<In, Out> = (
+  this: PureStream<In, Out>,
+  value: In,
+  push: PureStreamPush<Out>
+) => OrPromiseLike<void | any>;
+export type PureStreamFlush<In, Out> = (
+  this: PureStream<In, Out>,
+  push: PureStreamPush<Out>
+) => OrPromiseLike<void | any>;
 
 export interface PureStreamOptions {
   /** Limit backpressure to this many objects */
@@ -24,14 +31,14 @@ export interface PureStreamInternal<In, Out> {
    *
    * stream.pipe(transform((value, push) => { ... }));
    * ```
-  */
+   */
   transform?: PureStreamTransform<In, Out>;
   /**
    * **INTERNAL**
    *
    * Used for creating helper methods.
    * You wouldn't normally need to use this.
-  */
+   */
   flush?: PureStreamFlush<In, Out>;
 }
 
@@ -45,10 +52,10 @@ function pipe<In, Out>(source: Readable, destination: PureStream<In, Out>) {
 
   source.pipe(destinationStream);
 
-  source.once('error', (err) => {
+  source.on('error', (err) => {
     source.unpipe(destinationStream);
     source.destroy();
-    destinationStream.destroy(err);
+    destination.destroy(err);
   });
 
   return destination;
@@ -56,18 +63,22 @@ function pipe<In, Out>(source: Readable, destination: PureStream<In, Out>) {
 
 function buildTransform<In, Out>(self: PureStream<In, Out>, method?: PureStreamTransform<In, Out>) {
   if (!method) return undefined;
-  return async function transform(this: Transform, chunk: In, encoding: string, callback: () => void) {
+  return async function transform(
+    this: Transform,
+    chunk: In,
+    encoding: string,
+    callback: () => void
+  ) {
     try {
       const push = this.push.bind(this);
       const result = await method.call(self, chunk, push);
-      if (result !== undefined)
-        push(result);
+      if (result !== undefined) push(result);
     } catch (err) {
       this.destroy(err);
     } finally {
       callback();
     }
-  }
+  };
 }
 
 function buildFlush<In, Out>(self: PureStream<In, Out>, method?: PureStreamFlush<In, Out>) {
@@ -76,14 +87,13 @@ function buildFlush<In, Out>(self: PureStream<In, Out>, method?: PureStreamFlush
     try {
       const push = this.push.bind(this);
       const result = await method.call(self, push);
-      if (result !== undefined)
-        push(result);
+      if (result !== undefined) push(result);
     } catch (err) {
       this.destroy(err);
     } finally {
       callback();
     }
-  }
+  };
 }
 
 /**
@@ -118,12 +128,15 @@ export class PureStream<In, Out = In> {
       this.instance.end();
     });
     // On end, set ended true
-    this.instance.once('end', () => this.ended = true);
+    this.instance.once('end', () => (this.ended = true));
   }
 
   /** Pipe output into another stream */
   public pipe<T>(destination: PureStream<Out, T>) {
-    return pipe<Out, T>(this.instance, destination);
+    return pipe<Out, T>(
+      this.instance,
+      destination
+    );
   }
 
   /** Write a value to the stream */
@@ -138,7 +151,6 @@ export class PureStream<In, Out = In> {
     return await new Promise((resolve) => {
       this.instance.once('end', () => resolve());
       this.instance.destroy(error);
-      this.instance.end();
     });
   }
 
@@ -168,7 +180,7 @@ export class PureStream<In, Out = In> {
   public done(handler?: (error?: Error) => OrPromiseLike<void | any>, consume = true): void {
     let error: Error | undefined;
 
-    const storeError = (err: Error) => error = err;
+    const storeError = (err: Error) => (error = err);
     this.instance.once('error', storeError);
     this.instance.once('end', () => {
       this.instance.removeListener('error', storeError);
@@ -186,7 +198,10 @@ export class PureStream<In, Out = In> {
   /** Wrap a native stream in a PureStream */
   public static wrap<In, Out>(source: Readable) {
     const wrapped = new PureStream<In, Out>();
-    const stream = pipe(source, wrapped);
+    const stream = pipe(
+      source,
+      wrapped
+    );
     return stream;
   }
 }
