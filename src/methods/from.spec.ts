@@ -31,16 +31,13 @@ describe('from', () => {
         expect(check.mock.calls[1][0]).toEqual(2);
         expect(check.mock.calls[2][0]).toEqual(3);
         done();
-      })
+      });
   });
 
   it('Map', (done) => {
     const check = jest.fn();
 
-    from(new Map([
-      ['a', 1],
-      ['b', 2]
-    ]))
+    from(new Map([['a', 1], ['b', 2]]))
       .each(check)
       .done((err) => {
         expect(err).toBe(undefined);
@@ -81,9 +78,21 @@ describe('from', () => {
       });
   });
 
+  it('Promise Rejection', (done) => {
+    const check = jest.fn();
+
+    from(Promise.reject(new Error('test')))
+      .each(check)
+      .done((err) => {
+        expect(err).toEqual(new Error('test'));
+        expect(check.mock.calls.length).toEqual(0);
+        done();
+      });
+  });
+
   it('Stream', (done) => {
     const check = jest.fn();
-    const stream = new PassThrough({objectMode: true});
+    const stream = new PassThrough({ objectMode: true });
 
     from<number>(stream)
       .each(check)
@@ -113,5 +122,5 @@ describe('from', () => {
         expect(check.mock.calls[0][0]).toEqual(1);
         done();
       });
-  })
+  });
 });
