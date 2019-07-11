@@ -62,7 +62,7 @@ describe('PureStream', () => {
   });
 
   describe('wrap', () => {
-    it('wraps native stream', (done) => {
+    it('wraps node stream', (done) => {
       const source = new PassThrough({ objectMode: true });
       const dest = new PureStream();
 
@@ -77,7 +77,7 @@ describe('PureStream', () => {
       source.destroy(new Error('test'));
     });
 
-    it('wraps native stream with multiple errors', (done) => {
+    it('wraps node stream with multiple errors', (done) => {
       const source = new PassThrough({ objectMode: true });
       const dest = new PureStream();
 

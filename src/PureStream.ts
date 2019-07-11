@@ -205,6 +205,18 @@ export class PureStream<In, Out = In> {
     return stream;
   }
 
+  /** Convert this PureStream into a promise for an array of each value in the stream */
+  public toPromise() {
+    return new Promise<Out[]>((resolve, reject) => {
+      const accumulated: Out[] = [];
+
+      this.each((value) => accumulated.push(value)).done((err) => {
+        if (err) reject(err);
+        else resolve(accumulated);
+      });
+    });
+  }
+
   public static wrap<T>(source: Readable): PureStream<T>;
   public static wrap<T>(source: PassThrough): PureStream<T>;
   public static wrap<In, Out>(source: Transform): PureStream<In, Out>;
