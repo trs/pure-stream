@@ -37,8 +37,8 @@ function fromAny<T>(value: T) {
 /**
  * Convert the given value into a stream.
  * Can be:
- * - Native Readable stream
- * - Native Transform stream
+ * - Node Readable stream
+ * - Node Transform stream
  * - Iterable
  * - AsyncIterable
  * - Promise

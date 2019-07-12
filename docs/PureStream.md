@@ -78,3 +78,31 @@ import {PureStream} from 'pure-stream';
 
 new PureStream().done((err) => console.log('Stream ended', err));
 ```
+
+## `toPromise`
+
+Convert the stream into a promise that resolves to an array of each item in the stream.
+
+```js
+import {PureStream} from 'pure-stream';
+
+const stream = new PureStream();
+stream.write(1);
+stream.write(2);
+stream.toPromise(); // Promise<[1, 2]>
+```
+
+## `toNodeStream`
+
+Convert the stream into a node passthrough stream.
+
+```js
+import {PureStream} from 'pure-stream';
+
+const stream = new PureStream();
+stream.write(1);
+stream.write(2);
+
+const nodeStream = stream.toNodeStream();
+nodeStream.on('data', () => {}); // 1, 2
+```
