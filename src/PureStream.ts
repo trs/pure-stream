@@ -160,23 +160,19 @@ export class PureStream<In, Out = In> {
     });
   }
 
-  public each(handler: (value: Out) => OrPromiseLike<void>): PureStream<In, Out>;
-  public each(handler: (value: Out) => OrPromiseLike<any>): PureStream<In, Out>;
   /** Inspect each element of the stream */
-  public each(handler: (value: Out) => OrPromiseLike<void | any>): PureStream<In, Out> {
+  public each(handler: (value: Out) => OrPromiseLike<any>): PureStream<In, Out> {
     this.instance.on('data', (value) => handler(value));
     return this;
   }
 
-  public done(handler?: (error?: Error) => OrPromiseLike<void>, consume?: boolean): void;
-  public done(handler?: (error?: Error) => OrPromiseLike<any>, consume?: boolean): void;
   /**
    * Calls the handler once the stream ends, if provided.
    * Will begin consuming the stream, unless consume is false.
    * @param handler First argument is the error
    * @param consume Indicates if the stream should begin consuming
    */
-  public done(handler?: (error?: Error) => OrPromiseLike<void | any>, consume = true): void {
+  public done(handler?: (error?: Error) => OrPromiseLike<any>, consume = true): void {
     let error: Error | undefined;
 
     const storeError = (err: Error) => (error = err);
@@ -193,7 +189,8 @@ export class PureStream<In, Out = In> {
 
   public toNodeStream(): PassThrough;
   public toNodeStream(options: TransformOptions): PassThrough;
-  public toNodeStream(consume: boolean, options?: TransformOptions): PassThrough;
+  public toNodeStream(consume: boolean): PassThrough;
+  public toNodeStream(consume: boolean, options: TransformOptions): PassThrough;
   /** Convert this PureStream into a node PassThrough stream */
   public toNodeStream(consume?: boolean | TransformOptions, options: TransformOptions = {}) {
     if (typeof consume === 'object') {
