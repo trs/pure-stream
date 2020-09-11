@@ -129,3 +129,58 @@ from([1, 2, 3])
 
 > References:  
 > [`from`]('./Creators.md#from)
+
+### `merge`
+
+Combines multiple streams into one, alternating data from each
+
+```js
+import {from, merge} from 'pure-stream';
+
+merge(
+  from([1, 2]),
+  from([3, 4]),
+  from([5, 6])
+)
+.each(console.log)
+.done()
+
+// Output:
+// 1
+// 3
+// 5
+// 2
+// 4
+// 6
+```
+
+> References:  
+> [`from`]('./Creators.md#from)
+
+### `concat`
+
+Concatenate streams of data together.  
+The left stream will emit until the end, then emit from right stream.
+
+```js
+import {from, concat} from 'pure-stream';
+
+concat(
+  from([1, 2]),
+  from([3, 4]),
+  from([5, 6])
+)
+.each(console.log)
+.done()
+
+// Output:
+// 1
+// 2
+// 3
+// 4
+// 5
+// 6
+```
+
+> References:  
+> [`from`]('./Creators.md#from)
